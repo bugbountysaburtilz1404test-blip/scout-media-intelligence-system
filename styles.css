@@ -714,7 +714,7 @@ body {
 
 .filter-select {
     padding: 7px 12px;
-    background: var(--glass);
+    background: var(--bg-secondary);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-sm);
     color: var(--text-primary);
@@ -722,13 +722,19 @@ body {
     font-size: 0.78rem;
     cursor: pointer;
     transition: var(--transition);
-    appearance: none;
-    -webkit-appearance: none;
+    appearance: auto;
+    -webkit-appearance: auto;
 }
 
 .filter-select:focus {
     border-color: var(--purple);
     outline: none;
+}
+
+.filter-select option {
+    background: #1a1730;
+    color: #f1f0f7;
+    padding: 8px;
 }
 
 .table-info {
