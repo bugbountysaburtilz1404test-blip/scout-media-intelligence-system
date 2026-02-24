@@ -1,0 +1,33 @@
+{
+  "name": "scout-media-intelligence-system",
+  "version": "2.0.0",
+  "description": "Production-grade automated system for scraping, NLP analysis, sentiment detection, and visualization of Saudi Scouts Association news.",
+  "main": "scripts/run_all.js",
+  "scripts": {
+    "start": "node scripts/run_all.js",
+    "scrape": "node scripts/scraper.js",
+    "analyze": "node scripts/analyzer.js",
+    "analytics": "node scripts/analytics.js",
+    "alerts": "node scripts/alerts.js",
+    "report": "node scripts/report.js",
+    "pipeline": "node scripts/run_all.js"
+  },
+  "keywords": ["media-intelligence", "nlp", "arabic", "web-scraping", "analytics", "scouts", "saudi-arabia"],
+  "author": "Scout Intelligence Team",
+  "license": "MIT",
+  "type": "commonjs",
+  "homepage": "https://github.com/scout-media-intelligence",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scout-media-intelligence/scout-media-intelligence-system"
+  },
+  "dependencies": {
+    "axios": "^1.13.5",
+    "canvas": "^3.2.1",
+    "chart.js": "^4.5.1",
+    "cheerio": "^1.2.0",
+    "compromise": "^14.14.5",
+    "jspdf": "^4.2.0",
+    "natural": "^8.1.0"
+  }
+}

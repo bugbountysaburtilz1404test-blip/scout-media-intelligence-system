@@ -1,0 +1,68 @@
+name: Media Intelligence Automation
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # Every 6 hours
+  workflow_dispatch: # Allow manual run
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Scraper
+        run: node scripts/scraper.js
+        continue-on-error: true
+        env:
+          DEV_LIMIT: 50
+
+      - name: Run NLP Analyzer
+        run: node scripts/analyzer.js
+
+      - name: Run Analytics Engine
+        run: node scripts/analytics.js
+
+      - name: Run Alert System
+        run: node scripts/alerts.js
+
+      - name: Generate Report
+        run: node scripts/report.js
+        continue-on-error: true
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ reports/
+          git commit -m "🔄 Auto-update media intelligence data [skip ci]" || echo "No changes to commit"
+          git push
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
