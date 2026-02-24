@@ -3,91 +3,86 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scout Intelligence — نظام ذكاء الكشافة</title>
-    <meta name="description" content="منصة التحليل الآلي والأرشفة الذكية لأخبار جمعية الكشافة العربية السعودية. تحليلات متقدمة، رصد إعلامي، ومراقبة المشاعر.">
-    <meta name="keywords" content="كشافة، تحليل إعلامي، ذكاء اصطناعي، أخبار، سعودية">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>نظام ذكاء الكشافة — رصد وتحليل إعلامي</title>
+    <meta name="description"
+        content="منصة التحليل الآلي والأرشفة الذكية لأخبار جمعية الكشافة العربية السعودية. تحليلات متقدمة، رصد إعلامي، وتحليل مشاعر.">
+    <link rel="icon" href="https://www.scouts.org.sa/ar/ebook/ico/151.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 
 <body>
-    <!-- Animated Background -->
+    <!-- خلفية متحركة -->
     <div class="bg-animation">
         <div class="bg-gradient"></div>
         <div class="particles" id="particles"></div>
     </div>
 
-    <!-- Loading Screen -->
+    <!-- شاشة التحميل -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loader">
-            <div class="loader-ring"></div>
-            <div class="loader-ring"></div>
-            <div class="loader-ring"></div>
+            <img src="https://www.scouts.org.sa/ar/ebook/ico/151.png" alt="شعار الكشافة" class="loader-logo">
+            <div class="loader-bar">
+                <div class="loader-fill"></div>
+            </div>
             <p class="loader-text">جاري تحميل البيانات...</p>
         </div>
     </div>
 
-    <!-- Main App -->
+    <!-- التطبيق الرئيسي -->
     <div class="app" id="app" style="opacity: 0;">
-        <!-- Header -->
+        <!-- الرأسية -->
         <header class="header">
             <div class="header-content">
                 <div class="logo-section">
-                    <div class="logo-icon">
-                        <svg viewBox="0 0 40 40" fill="none">
-                            <circle cx="20" cy="20" r="18" stroke="url(#grad)" stroke-width="2.5" fill="none"/>
-                            <path d="M20 8 L26 18 L34 20 L26 22 L20 32 L14 22 L6 20 L14 18 Z" fill="url(#grad)" opacity="0.8"/>
-                            <defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#00d4aa"/><stop offset="100%" style="stop-color:#7c3aed"/></linearGradient></defs>
-                        </svg>
-                    </div>
+                    <img src="https://www.scouts.org.sa/ar/ebook/ico/151.png" alt="شعار الكشافة" class="logo-img">
                     <div>
-                        <h1 class="logo-title">Scout Intelligence</h1>
-                        <p class="logo-subtitle">منصة التحليل الذكي لأخبار الكشافة</p>
+                        <h1 class="logo-title">نظام ذكاء الكشافة</h1>
+                        <p class="logo-subtitle">منصة الرصد والتحليل الإعلامي الآلي</p>
                     </div>
                 </div>
                 <div class="header-actions">
                     <span class="live-badge"><span class="live-dot"></span> مباشر</span>
-                    <span class="last-updated" id="lastUpdated">جاري التحميل...</span>
-                    <button class="btn-export" id="btnExport" title="تصدير CSV">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        تصدير
+                    <span class="last-updated" id="lastUpdated"></span>
+                    <button class="btn-action" id="btnExport" title="تصدير البيانات">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        تصدير CSV
                     </button>
                 </div>
             </div>
         </header>
 
-        <!-- KPI Cards -->
+        <!-- بطاقات الإحصائيات الرئيسية -->
         <section class="section" id="kpi-section">
             <div class="kpi-grid">
                 <div class="kpi-card" data-animate>
-                    <div class="kpi-icon" style="background: linear-gradient(135deg, #00d4aa, #00b894);">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 3v5h5"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
-                    </div>
+                    <div class="kpi-icon kpi-icon-1">📰</div>
                     <div class="kpi-content">
                         <span class="kpi-label">إجمالي المقالات</span>
-                        <span class="kpi-value" id="kpi-total" data-count="0">0</span>
-                        <span class="kpi-trend trend-up" id="kpi-total-trend">أرشيف شامل</span>
+                        <span class="kpi-value" id="kpi-total">0</span>
+                        <span class="kpi-trend" id="kpi-total-trend">أرشيف شامل</span>
                     </div>
                 </div>
                 <div class="kpi-card" data-animate>
-                    <div class="kpi-icon" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </div>
+                    <div class="kpi-icon kpi-icon-2">👁️</div>
                     <div class="kpi-content">
                         <span class="kpi-label">متوسط المشاهدات</span>
-                        <span class="kpi-value" id="kpi-views" data-count="0">0</span>
-                        <span class="kpi-trend" id="kpi-views-trend">زيارة/مقال</span>
+                        <span class="kpi-value" id="kpi-views">0</span>
+                        <span class="kpi-trend" id="kpi-views-trend">زيارة / مقال</span>
                     </div>
                 </div>
                 <div class="kpi-card" data-animate>
-                    <div class="kpi-icon" style="background: linear-gradient(135deg, #f59e0b, #f97316);">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    </div>
+                    <div class="kpi-icon kpi-icon-3">🏙️</div>
                     <div class="kpi-content">
                         <span class="kpi-label">المدينة الأكثر تغطية</span>
                         <span class="kpi-value kpi-text" id="kpi-city">-</span>
@@ -95,29 +90,40 @@
                     </div>
                 </div>
                 <div class="kpi-card" data-animate>
-                    <div class="kpi-icon" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                    </div>
+                    <div class="kpi-icon kpi-icon-4">⭐</div>
                     <div class="kpi-content">
                         <span class="kpi-label">جودة المحتوى</span>
-                        <span class="kpi-value" id="kpi-richness" data-count="0">0</span>
-                        <span class="kpi-trend trend-up">من 100 نقطة</span>
+                        <span class="kpi-value" id="kpi-richness">0</span>
+                        <span class="kpi-trend">من 100 نقطة</span>
+                    </div>
+                </div>
+                <div class="kpi-card" data-animate>
+                    <div class="kpi-icon kpi-icon-5">📊</div>
+                    <div class="kpi-content">
+                        <span class="kpi-label">إجمالي المشاهدات</span>
+                        <span class="kpi-value" id="kpi-totalViews">0</span>
+                        <span class="kpi-trend">مشاهدة</span>
+                    </div>
+                </div>
+                <div class="kpi-card" data-animate>
+                    <div class="kpi-icon kpi-icon-6">📅</div>
+                    <div class="kpi-content">
+                        <span class="kpi-label">أنشط يوم</span>
+                        <span class="kpi-value kpi-text" id="kpi-day">-</span>
+                        <span class="kpi-trend" id="kpi-growth">معدل النمو: -</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Sentiment + Stats Row -->
+        <!-- قسم المشاعر + السريع -->
         <section class="section">
             <div class="stats-row">
-                <div class="glass-card sentiment-card" data-animate>
-                    <h3 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-                        تحليل المشاعر
-                    </h3>
+                <div class="glass-card" data-animate>
+                    <h3 class="card-title">💬 تحليل المشاعر</h3>
                     <div class="sentiment-gauge">
-                        <div class="gauge-container" id="sentimentGauge">
-                            <canvas id="sentimentChart" width="200" height="200"></canvas>
+                        <div class="gauge-container">
+                            <canvas id="sentimentChart" width="180" height="180"></canvas>
                         </div>
                         <div class="sentiment-stats" id="sentimentStats">
                             <div class="sentiment-item positive">
@@ -125,7 +131,7 @@
                                 <span>إيجابي</span>
                                 <strong id="sent-pos">0</strong>
                             </div>
-                            <div class="sentiment-item neutral">
+                            <div class="sentiment-item neutral-s">
                                 <span class="sent-dot"></span>
                                 <span>محايد</span>
                                 <strong id="sent-neutral">0</strong>
@@ -139,72 +145,41 @@
                     </div>
                 </div>
                 <div class="glass-card" data-animate>
-                    <h3 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        وقت القراءة
-                    </h3>
+                    <h3 class="card-title">⏱️ وقت القراءة</h3>
                     <div class="chart-container-sm">
                         <canvas id="readingTimeChart"></canvas>
                     </div>
                 </div>
                 <div class="glass-card" data-animate>
-                    <h3 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                        إحصائيات سريعة
-                    </h3>
-                    <div class="quick-stats" id="quickStats">
-                        <div class="stat-item">
-                            <span class="stat-number" id="stat-totalViews">0</span>
-                            <span class="stat-label">إجمالي المشاهدات</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number" id="stat-avgWords">0</span>
-                            <span class="stat-label">متوسط الكلمات</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number" id="stat-activeDay">-</span>
-                            <span class="stat-label">أنشط يوم</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number" id="stat-growth">0%</span>
-                            <span class="stat-label">معدل النمو</span>
-                        </div>
+                    <h3 class="card-title">📋 تقييم الجودة</h3>
+                    <div class="chart-container-sm">
+                        <canvas id="gradeChart"></canvas>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Charts Section -->
+        <!-- اتجاه النشر -->
         <section class="section">
-            <div class="charts-grid">
-                <div class="glass-card chart-full" data-animate>
-                    <h3 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                        اتجاه النشر الشهري
-                    </h3>
-                    <div class="chart-container">
-                        <canvas id="trendChart"></canvas>
-                    </div>
+            <div class="glass-card chart-full" data-animate>
+                <h3 class="card-title">📈 اتجاه النشر الشهري</h3>
+                <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
                 </div>
             </div>
         </section>
 
+        <!-- مقارنة + مواضيع -->
         <section class="section">
             <div class="charts-grid-2">
                 <div class="glass-card" data-animate>
-                    <h3 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-                        المقارنة السنوية
-                    </h3>
+                    <h3 class="card-title">📊 المقارنة السنوية</h3>
                     <div class="chart-container">
                         <canvas id="yearChart"></canvas>
                     </div>
                 </div>
                 <div class="glass-card" data-animate>
-                    <h3 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2 a10 10 0 0 1 0 20"/></svg>
-                        توزيع المواضيع
-                    </h3>
+                    <h3 class="card-title">🏷️ توزيع المواضيع</h3>
                     <div class="chart-container">
                         <canvas id="topicChart"></canvas>
                     </div>
@@ -212,22 +187,17 @@
             </div>
         </section>
 
+        <!-- مدن + رادار -->
         <section class="section">
             <div class="charts-grid-2">
                 <div class="glass-card" data-animate>
-                    <h3 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        تغطية المدن
-                    </h3>
+                    <h3 class="card-title">🗺️ تغطية المدن</h3>
                     <div class="chart-container">
                         <canvas id="cityChart"></canvas>
                     </div>
                 </div>
                 <div class="glass-card" data-animate>
-                    <h3 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        تحليل المواضيع (رادار)
-                    </h3>
+                    <h3 class="card-title">🎯 تحليل المواضيع (رادار)</h3>
                     <div class="chart-container">
                         <canvas id="radarChart"></canvas>
                     </div>
@@ -235,53 +205,69 @@
             </div>
         </section>
 
-        <!-- Keywords Cloud -->
+        <!-- الكيانات المذكورة -->
+        <section class="section">
+            <div class="charts-grid-2">
+                <div class="glass-card" data-animate>
+                    <h3 class="card-title">👤 أبرز الشخصيات المذكورة</h3>
+                    <div class="entities-list" id="peopleList"></div>
+                </div>
+                <div class="glass-card" data-animate>
+                    <h3 class="card-title">🏛️ أبرز المنظمات المذكورة</h3>
+                    <div class="entities-list" id="orgsList"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- الكلمات المفتاحية -->
         <section class="section">
             <div class="glass-card" data-animate>
-                <h3 class="card-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
-                    الكلمات الأكثر تكراراً
-                </h3>
+                <h3 class="card-title">🔤 الكلمات الأكثر تكراراً</h3>
                 <div class="keywords-cloud" id="keywordsCloud"></div>
             </div>
         </section>
 
-        <!-- Alerts Section -->
+        <!-- التنبيهات -->
         <section class="section">
             <div class="glass-card" data-animate>
-                <h3 class="card-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                    تنبيهات النظام
-                </h3>
+                <h3 class="card-title">🔔 تنبيهات النظام</h3>
                 <div class="alerts-list" id="alertsList">
                     <p class="empty-state">لا توجد تنبيهات حالية</p>
                 </div>
             </div>
         </section>
 
-        <!-- Articles Table -->
+        <!-- جدول المقالات -->
         <section class="section">
             <div class="glass-card table-card" data-animate>
                 <div class="table-header">
-                    <h3 class="card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg>
-                        المقالات المرصودة
-                    </h3>
+                    <h3 class="card-title">📋 المقالات المرصودة</h3>
                     <div class="table-controls">
-                        <div class="search-input-wrapper">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <div class="search-box">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
                             <input type="text" id="articleSearch" placeholder="بحث في العناوين...">
                         </div>
                         <select id="themeFilter" class="filter-select">
                             <option value="">كل المواضيع</option>
                         </select>
+                        <select id="sentimentFilter" class="filter-select">
+                            <option value="">كل المشاعر</option>
+                            <option value="إيجابي">إيجابي</option>
+                            <option value="محايد">محايد</option>
+                            <option value="سلبي">سلبي</option>
+                        </select>
                         <select id="perPage" class="filter-select">
                             <option value="10">10 مقالات</option>
-                            <option value="25">25 مقالات</option>
-                            <option value="50">50 مقالات</option>
+                            <option value="25">25 مقالة</option>
+                            <option value="50">50 مقالة</option>
                         </select>
                     </div>
                 </div>
+                <div class="table-info" id="tableInfo"></div>
                 <div class="table-wrapper">
                     <table>
                         <thead>
@@ -302,11 +288,13 @@
             </div>
         </section>
 
-        <!-- Footer -->
+        <!-- التذييل -->
         <footer class="footer">
             <div class="footer-content">
-                <p>© 2026 Scout Intelligence — نظام ذكاء الكشافة</p>
-                <p class="footer-sub">جميع البيانات مستخرجة آلياً من المصادر الرسمية • Powered by AI</p>
+                <img src="https://www.scouts.org.sa/ar/ebook/ico/151.png" alt="شعار الكشافة" class="footer-logo">
+                <p>© 2026 نظام ذكاء الكشافة — جمعية الكشافة العربية السعودية</p>
+                <p class="footer-sub">جميع البيانات مستخرجة آلياً من المصادر الرسمية • يتم التحديث كل 5 ساعات تلقائياً
+                </p>
             </div>
         </footer>
     </div>

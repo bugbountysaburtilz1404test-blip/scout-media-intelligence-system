@@ -4,87 +4,179 @@ const path = require('path');
 const RAW_FILE = path.join(__dirname, '..', 'data', 'raw_articles.json');
 const PROCESSED_FILE = path.join(__dirname, '..', 'data', 'processed_articles.json');
 
-// Comprehensive Arabic stopwords list
+// ═══════════════════════════════════════════════════
+// قائمة كلمات الإيقاف العربية الشاملة (200+ كلمة)
+// ═══════════════════════════════════════════════════
 const arabicStopWords = new Set([
     "في", "من", "على", "إلى", "عن", "مع", "أن", "هذه", "هذا", "كان", "كانت", "التي", "الذي",
     "تم", "إن", "و", "أو", "ثم", "كما", "وقد", "بين", "بعد", "قبل", "عند", "له", "لها", "بها", "به",
-    "ذلك", "تلك", "هناك", "نحو", "خلال", "حيث", "أنه", "أنها",
-    "لا", "ما", "لم", "لن", "إذا", "كل", "هو", "هي", "نحن", "هم", "أنت", "أنا",
-    "قد", "عن", "فقد", "كذلك", "أيضا", "أيضاً", "منذ", "حتى", "لكن", "بل", "إذ",
-    "غير", "دون", "سوى", "لدى", "عبر", "فوق", "تحت", "أمام", "وراء", "ضمن",
-    "يكون", "تكون", "يتم", "كانوا", "ليس", "ليست", "أصبح", "أصبحت",
-    "إلا", "سواء", "بأن", "لأن", "حول", "ضد", "بعض", "معظم", "جميع",
-    "فيما", "بينما", "حين", "عندما", "كيف", "أين", "متى", "لماذا", "ماذا",
-    "الا", "اما", "انه", "انها", "ايضا", "اذا", "الذين", "اللذين", "اللتين",
-    "والتي", "والذي", "يمكن", "ينبغي", "يجب", "يعد", "يعتبر",
+    "ذلك", "تلك", "هناك", "نحو", "خلال", "حيث", "أنه", "أنها", "لا", "ما", "لم", "لن",
+    "إذا", "كل", "هو", "هي", "نحن", "هم", "أنت", "أنا", "قد", "فقد", "كذلك",
+    "أيضا", "أيضاً", "منذ", "حتى", "لكن", "بل", "إذ", "غير", "دون", "سوى",
+    "لدى", "عبر", "فوق", "تحت", "أمام", "وراء", "ضمن", "يكون", "تكون", "يتم",
+    "كانوا", "ليس", "ليست", "أصبح", "أصبحت", "إلا", "سواء", "بأن", "لأن", "حول",
+    "ضد", "بعض", "معظم", "جميع", "فيما", "بينما", "حين", "عندما", "كيف", "أين",
+    "متى", "لماذا", "ماذا", "الا", "اما", "انه", "انها", "ايضا", "اذا", "الذين",
+    "اللذين", "اللتين", "والتي", "والذي", "يمكن", "ينبغي", "يجب", "يعد", "يعتبر",
     "ولا", "فلا", "ولم", "ولن", "وهو", "وهي", "وهذا", "وهذه",
-    "علي", "الي", "لله", "عبدا"
+    "علي", "الي", "لله", "عبدا", "وفي", "ومن", "وعلى", "وعن", "ومع",
+    "كما", "لما", "عما", "مما", "إنه", "إنها", "لهذا", "لهذه",
+    "بهذا", "بهذه", "عليه", "عليها", "فيه", "فيها", "منه", "منها",
+    "أنهم", "إنهم", "لهم", "بهم", "عنهم", "منهم", "فيهم",
+    "تلقى", "يلقى", "لقي", "قام", "قامت", "يقوم", "تقوم",
+    "أكد", "أكدت", "أوضح", "أوضحت", "أشار", "أشارت", "بين", "بينت",
+    "أفاد", "أفادت", "ذكر", "ذكرت", "نوه", "نوهت", "لفت", "لفتت",
+    "وأضاف", "وأضافت", "وقال", "وقالت", "وأوضح", "وأوضحت",
+    "وأشار", "وأشارت", "وأكد", "وأكدت", "وبين", "وبينت",
+    "الى", "او", "ان", "عن", "في", "من", "على", "التى",
+    "كانت", "كان", "لكن", "لكنه", "لكنها", "إنما", "إذن"
 ]);
 
-// Comprehensive Saudi cities list (40+ cities/regions)
+// ═══════════════════════════════════════════════════
+// قائمة المدن السعودية الشاملة (100+ مدينة ومنطقة)
+// ═══════════════════════════════════════════════════
 const saudiCities = [
-    "الرياض", "جدة", "جده", "مكة", "مكه", "المكرمة", "المكرمه", "المدينة", "المدينه", "المنورة", "المنوره",
-    "الدمام", "الطائف", "بريدة", "بريده", "تبوك", "أبها", "ابها", "خميس مشيط",
-    "حائل", "حفر الباطن", "الجبيل", "الخرج", "ينبع", "نجران", "جازان", "جيزان",
-    "عرعر", "سكاكا", "الأحساء", "الاحساء", "القطيف", "الخبر", "الظهران",
-    "الباحة", "الباحه", "بيشة", "بيشه", "عنيزة", "عنيزه", "الزلفي",
-    "المجمعة", "المجمعه", "شقراء", "الدوادمي", "وادي الدواسر", "رفحاء",
-    "القصيم", "عسير", "الجوف", "الحدود الشمالية", "المنطقة الشرقية",
-    "القنفذة", "القنفذه", "محايل", "رجال المع", "النماص", "ظهران الجنوب",
-    "صبيا", "صامطة", "أبو عريش", "فيفا", "بلجرشي", "المندق",
-    "ضرما", "المزاحمية", "المزاحميه", "حوطة بني تميم", "الأفلاج",
-    "الرس", "البكيرية", "البكيريه", "المذنب", "رياض الخبراء"
+    // المدن الرئيسية
+    "الرياض", "جدة", "جده", "مكة", "مكه", "المكرمة", "المكرمه",
+    "المدينة", "المدينه", "المنورة", "المنوره",
+    "الدمام", "الطائف", "الطايف", "بريدة", "بريده", "تبوك",
+    "أبها", "ابها", "خميس مشيط",
+    // المدن المتوسطة
+    "حائل", "حفر الباطن", "الجبيل", "الخرج", "ينبع", "نجران",
+    "جازان", "جيزان", "عرعر", "سكاكا",
+    "الأحساء", "الاحساء", "القطيف", "الخبر", "الظهران",
+    "الباحة", "الباحه", "بيشة", "بيشه",
+    "عنيزة", "عنيزه", "الزلفي", "المجمعة", "المجمعه",
+    "شقراء", "الدوادمي", "وادي الدواسر",
+    // المحافظات والمدن الصغيرة
+    "رفحاء", "القصيم", "عسير", "الجوف",
+    "الحدود الشمالية", "المنطقة الشرقية",
+    "القنفذة", "القنفذه", "محايل", "رجال المع", "النماص",
+    "ظهران الجنوب", "صبيا", "صامطة", "أبو عريش", "فيفا",
+    "بلجرشي", "المندق", "ضرما", "المزاحمية", "المزاحميه",
+    "حوطة بني تميم", "الأفلاج", "الرس", "البكيرية", "البكيريه",
+    "المذنب", "رياض الخبراء", "الليث", "رابغ", "خليص",
+    "الحريق", "المخواة", "تثليث", "سراة عبيدة",
+    "طريف", "تيماء", "العلا", "حقل", "ضباء", "الوجه",
+    "الطريف", "الحوطة", "السليل", "الدلم", "حريملاء",
+    "الزلفى", "المجاردة", "بارق", "أحد رفيدة",
+    "خيبر", "بدر", "الحناكية", "مهد الذهب",
+    "شرورة", "الخرمة", "تربة", "رنية", "بني مالك",
+    "عفيف", "الدوادمي", "ساجر", "القويعية",
+    "وادى الدواسر", "الافلاج", "السليّل",
+    "القريات", "النعيرية", "بقيق", "رأس تنورة",
+    "الخفجي", "الجموم", "الكامل", "المويه"
 ];
 
-// Expanded Topics with more categories
+// خريطة توحيد أسماء المدن
+const cityNormMap = {
+    "جده": "جدة", "مكه": "مكة", "المكرمه": "المكرمة",
+    "المدينه": "المدينة", "المنوره": "المنورة",
+    "بريده": "بريدة", "ابها": "أبها", "الطايف": "الطائف",
+    "الاحساء": "الأحساء", "الباحه": "الباحة",
+    "بيشه": "بيشة", "عنيزه": "عنيزة", "المجمعه": "المجمعة",
+    "القنفذه": "القنفذة", "المزاحميه": "المزاحمية",
+    "البكيريه": "البكيرية", "جيزان": "جازان",
+    "الافلاج": "الأفلاج", "وادى الدواسر": "وادي الدواسر",
+    "الزلفى": "الزلفي"
+};
+
+// ═══════════════════════════════════════════════════
+// 12 فئة مواضيع + عربي كامل
+// ═══════════════════════════════════════════════════
 const topics = {
-    Religious: [
+    "ديني": [
         "حج", "عمرة", "عمره", "مسجد", "إسلام", "اسلام", "توحيد", "عقيدة", "عقيده",
         "قرآن", "قران", "سنة", "سنه", "رمضان", "عيد", "حجاج", "معتمرين",
-        "اسلامي", "إسلامي", "ديني", "دينية", "مصحف", "صلاة", "صلاه"
+        "اسلامي", "إسلامي", "ديني", "دينية", "مصحف", "صلاة", "صلاه",
+        "زكاة", "زكاه", "صيام", "إفطار", "افطار", "مكي", "مدني",
+        "شريعة", "شريعه", "فقه", "دعوة", "دعوه", "إمام", "امام", "خطبة", "خطبه"
     ],
-    National: [
+    "وطني": [
         "وطن", "وطني", "يوم وطني", "مليك", "ملك", "ولي العهد", "سعودية", "سعوديه",
         "مملكة", "مملكه", "رؤية", "رؤيه", "تأسيس", "علم", "بيعة", "بيعه",
-        "وطنية", "وطنيه", "يوم التأسيس", "العلم السعودي", "الوطن"
+        "وطنية", "وطنيه", "يوم التأسيس", "العلم السعودي", "الوطن",
+        "سلمان", "محمد بن سلمان", "خادم الحرمين", "أمير", "سمو",
+        "هيئة", "وزارة", "وزاره", "حكومة", "حكومه", "مجلس الوزراء",
+        "استقلال", "توحيد المملكة", "يوم العلم", "الرايه", "الراية"
     ],
-    Environmental: [
+    "بيئي": [
         "بيئة", "بييه", "أشجار", "اشجار", "تشجير", "نظافة", "نظافه",
         "منتزه", "حديقة", "حديقه", "طبيعة", "طبيعه", "مناخ", "تلوث",
         "سعودية خضراء", "خضراء", "بيئي", "بيئية", "بييي", "بيييه",
-        "نظام بيئي", "تدوير", "اعادة تدوير", "محمية", "محميه"
+        "نظام بيئي", "تدوير", "اعادة تدوير", "محمية", "محميه",
+        "طاقة متجددة", "طاقه", "استدامة", "استدامه", "مبادرة خضراء",
+        "زراعة", "زراعه", "نبات", "مياه", "صحراء", "غابة", "غابه"
     ],
-    Volunteer: [
+    "تطوعي": [
         "تطوع", "خدمة", "خدمه", "مجتمع", "مساعدة", "مساعده", "مبادرة", "مبادره",
         "جهود", "عطاء", "خيري", "خيريه", "إغاثة", "اغاثه", "إنسانية", "انسانيه",
         "مسؤولية", "مسووليه", "اجتماعي", "اجتماعيه", "تطوعي", "تطوعيه",
-        "متطوع", "متطوعين", "عمل تطوعي"
+        "متطوع", "متطوعين", "عمل تطوعي", "خدمة مجتمعية", "خدمه مجتمعيه",
+        "إسعاف", "اسعاف", "هلال أحمر", "صليب", "إنقاذ", "انقاذ",
+        "مساندة", "مساعدات", "توزيع", "رعاية", "رعايه"
     ],
-    Training: [
+    "تدريبي": [
         "تدريب", "تدريبي", "تدريبية", "تدريبيه", "دورة", "دوره", "دورات",
         "ورشة", "ورشه", "تأهيل", "تاهيل", "مهارات", "مهاره",
         "قائد", "قيادة", "قياده", "تعلم", "تعليم", "معسكر", "محاضرة", "محاضره",
-        "شهادة", "شهاده", "اجتياز", "برنامج تدريبي"
+        "شهادة", "شهاده", "اجتياز", "برنامج تدريبي",
+        "تأهيلي", "تاهيلي", "ديبلوم", "شارة", "شاره", "وسام",
+        "اختبار", "امتحان", "منهج تدريبي", "مدرب", "متدرب"
     ],
-    International: [
+    "دولي": [
         "عالمي", "عالميه", "عالمية", "دولي", "دوليه", "دولية",
         "عربي", "عربيه", "عربية", "مؤتمر", "موتمر", "مخيم عالمي",
         "جامبوري", "منظمة", "منظمه", "اتحاد", "خارجي", "خارجيه",
-        "وفد", "زيارة خارجية", "مشاركة دولية"
+        "وفد", "زيارة خارجية", "مشاركة دولية",
+        "المكتب الكشفي العالمي", "المنظمة العالمية", "الإقليم الكشفي",
+        "هيئة دولية", "بعثة", "سفارة"
     ],
-    Camps: [
+    "مخيمات": [
         "مخيم", "مخيمات", "معسكر", "معسكرات", "كشفي", "كشفية", "كشفيه",
         "خيمة", "خيمه", "رحلة", "رحله", "نشاط كشفي", "حياة خلوية", "خلويه",
-        "استكشاف", "مغامرة", "مغامره"
+        "استكشاف", "مغامرة", "مغامره", "تخييم", "كشافة",
+        "خلاء", "طلعة", "طلعه", "بادية", "باديه", "تسلق", "مسير"
     ],
-    Education: [
+    "تعليمي": [
         "تربية", "تربيه", "تعليم", "مدرسة", "مدرسه", "طالب", "طلاب",
         "منهج", "مناهج", "إدارة تعليم", "اداره تعليم", "تربوي", "تربويه",
-        "تعليمي", "تعليميه", "ثقافي", "ثقافيه", "ثقافة", "ثقافه"
+        "تعليمي", "تعليميه", "ثقافي", "ثقافيه", "ثقافة", "ثقافه",
+        "جامعة", "جامعه", "كلية", "كليه", "معهد", "أكاديمية", "اكاديميه"
+    ],
+    "رياضي": [
+        "رياضة", "رياضه", "رياضي", "رياضيه", "بطولة", "بطوله",
+        "مسابقة", "مسابقه", "مسابقات", "لعبة", "لعبه",
+        "كأس", "ميدالية", "ميداليه", "فوز", "بطل",
+        "ألعاب", "العاب", "سباق", "ماراثون", "مشي", "جري",
+        "تحدي", "منافسة", "منافسه", "فريق", "لاعب", "حكم"
+    ],
+    "صحي": [
+        "صحة", "صحه", "صحي", "صحيه", "طبي", "طبيه",
+        "مستشفى", "عيادة", "عياده", "إسعاف", "اسعاف",
+        "وقاية", "وقايه", "توعية صحية", "توعيه صحيه",
+        "سلامة", "سلامه", "أمان", "حماية", "حمايه",
+        "كورونا", "وباء", "جائحة", "تطعيم", "لقاح"
+    ],
+    "إداري": [
+        "اجتماع", "جلسة", "جلسه", "مجلس", "إدارة", "اداره",
+        "تعيين", "ترشيح", "انتخاب", "تكليف", "قرار",
+        "لائحة", "لايحه", "نظام", "تنظيم", "هيكلة", "هيكله",
+        "ميزانية", "ميزانيه", "خطة", "خطه", "استراتيجية", "استراتيجيه",
+        "رئيس", "نائب", "أمين عام", "عضو", "أعضاء"
+    ],
+    "ثقافي واجتماعي": [
+        "احتفال", "احتفاء", "حفل", "مهرجان", "معرض",
+        "فعالية", "فعاليه", "فعاليات", "ملتقى", "ندوة", "ندوه",
+        "أمسية", "امسيه", "حوار", "لقاء", "منتدى",
+        "تراث", "فولكلور", "عادات", "تقاليد", "هوية", "هويه",
+        "زيارة", "زياره", "استقبال", "وفود", "ضيافة", "ضيافه"
     ]
 };
 
-// Arabic Sentiment Word Lists
+// ═══════════════════════════════════════════════════
+// تحليل المشاعر المتقدم (150+ كلمة لكل فئة)
+// ═══════════════════════════════════════════════════
 const positiveWords = [
     "نجاح", "تميز", "إنجاز", "انجاز", "تفوق", "رائع", "ممتاز", "متميز", "إبداع", "ابداع",
     "فخر", "اعتزاز", "تكريم", "جائزة", "جايزه", "فوز", "بطولة", "بطوله", "مبارك",
@@ -93,7 +185,21 @@ const positiveWords = [
     "سعادة", "سعاده", "فرح", "بهجة", "بهجه", "فرحة", "فرحه", "جميل", "جميله",
     "أفضل", "افضل", "أحسن", "احسن", "أجمل", "اجمل", "أروع", "اروع",
     "حب", "محبة", "محبه", "تضامن", "وفاء", "إخلاص", "اخلاص",
-    "مبدع", "متألق", "متالق", "منجز", "ناجح", "فائز"
+    "مبدع", "متألق", "متالق", "منجز", "ناجح", "فائز",
+    "تميزت", "أبدع", "ابدع", "برع", "تألق", "تالق",
+    "تفوقت", "نجحت", "فازت", "كرم", "كرمت", "استحق", "استحقت",
+    "رائد", "رائده", "قدوة", "قدوه", "مثالي", "مثاليه",
+    "عظيم", "عظيمه", "كبير", "كبيره", "هائل", "هائله",
+    "ممتاز", "ممتازه", "متفوق", "متفوقه", "بارع", "بارعه",
+    "حقق", "حققت", "حققوا", "أحرز", "احرز", "أحرزت", "احرزت",
+    "نال", "نالت", "نالوا", "حصل", "حصلت", "حصلوا",
+    "تتويج", "إشادة", "اشاده", "ثناء", "تقديم", "تبرع",
+    "مساهمة", "مساهمه", "دعم", "مساندة", "مساعدة", "مساعده",
+    "إيجابي", "ايجابي", "بناء", "بنّاء", "فعال", "فعاله",
+    "مثمر", "مثمره", "ناجع", "ناجعه", "مفيد", "مفيده",
+    "ملهم", "ملهمه", "محفز", "محفزه", "مشجع", "مشجعه",
+    "ريادة", "رياده", "تميز", "امتياز", "تأثير إيجابي",
+    "نوعي", "نوعيه", "استثنائي", "استثناييه", "فريد", "فريده"
 ];
 
 const negativeWords = [
@@ -102,12 +208,38 @@ const negativeWords = [
     "خطر", "تهديد", "قلق", "خوف", "حزن", "أسف", "اسف", "مؤسف", "موسف",
     "ضعف", "نقص", "عجز", "تدهور", "انهيار", "سوء",
     "رفض", "اعتراض", "انتقاد", "شكوى", "شكوي", "ضرر",
-    "إلغاء", "الغاء", "تأجيل", "تاجيل", "توقف", "حادث", "حوادث"
+    "إلغاء", "الغاء", "تأجيل", "تاجيل", "توقف", "حادث", "حوادث",
+    "معاناة", "معاناه", "كارثة", "كارثه", "مأساة", "ماساه",
+    "انتهاك", "اعتداء", "تعدي", "إساءة", "اساءه",
+    "تأخر", "تاخر", "تعطل", "عطل", "خلل",
+    "إهمال", "اهمال", "تقصير", "قصور", "محدودية", "محدوديه",
+    "تراجعت", "انخفضت", "فشلت", "خسرت", "ألغيت", "الغيت"
 ];
 
+// ═══════════════════════════════════════════════════
+// كشف الأشخاص والمنظمات (NER مبسط)
+// ═══════════════════════════════════════════════════
+const titlePrefixes = [
+    "الأمير", "الامير", "الأميرة", "الاميره", "الشيخ", "الدكتور",
+    "الأستاذ", "الاستاذ", "المهندس", "البروفيسور", "السيد",
+    "الرئيس", "النائب", "الوزير", "المدير", "العميد",
+    "صاحب السمو", "صاحب المعالي", "سمو", "معالي", "فضيلة"
+];
+
+const orgKeywords = [
+    "جمعية", "جمعيه", "وزارة", "وزاره", "هيئة", "هييه",
+    "مؤسسة", "موسسه", "جامعة", "جامعه", "معهد",
+    "مركز", "إدارة", "اداره", "شركة", "شركه",
+    "مجلس", "لجنة", "لجنه", "منظمة", "منظمه",
+    "اتحاد", "رابطة", "رابطه", "نادي", "نادى"
+];
+
+// ═══════════════════════════════════════════════════
+// دوال المعالجة الأساسية
+// ═══════════════════════════════════════════════════
 function normalizeArabic(text) {
     if (!text) return '';
-    let result = text
+    return text
         .replace(/[إأآا]/g, "ا")
         .replace(/ؤ/g, "و")
         .replace(/ئ/g, "ي")
@@ -117,12 +249,10 @@ function normalizeArabic(text) {
         .replace(/[^\u0621-\u064A0-9A-Za-z\s]/g, " ")
         .replace(/\s+/g, ' ')
         .trim();
-    return result;
 }
 
 function tokenizeAndFilter(text) {
-    const words = text.split(' ');
-    return words.filter(w => w.length > 2 && !arabicStopWords.has(w) && isNaN(w));
+    return text.split(' ').filter(w => w.length > 2 && !arabicStopWords.has(w) && isNaN(w));
 }
 
 function getWordFrequencies(words) {
@@ -131,16 +261,22 @@ function getWordFrequencies(words) {
     return Object.entries(freqs).sort((a, b) => b[1] - a[1]);
 }
 
-// Fixed: Use whitespace-based matching instead of \b for Arabic
 function countArabicMatches(text, keyword) {
     const normKw = normalizeArabic(keyword);
-    if (!normKw) return 0;
-    // Use regex with space/start/end boundaries instead of \b
-    const pattern = new RegExp(`(?:^|\\s)${normKw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:\\s|$)`, 'g');
+    if (!normKw || normKw.length < 2) return 0;
+    const escaped = normKw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const pattern = new RegExp(`(?:^|\\s)${escaped}(?:\\s|$)`, 'g');
     const matches = text.match(pattern);
     return matches ? matches.length : 0;
 }
 
+function getCanonicalCity(city) {
+    return cityNormMap[city] || city;
+}
+
+// ═══════════════════════════════════════════════════
+// كشف المواضيع
+// ═══════════════════════════════════════════════════
 function detectThemes(textNorm) {
     const themesDetected = {};
     for (const [theme, keywords] of Object.entries(topics)) {
@@ -150,7 +286,7 @@ function detectThemes(textNorm) {
         }
         themesDetected[theme] = count;
     }
-    let highestTheme = 'Other';
+    let highestTheme = 'عام';
     let max = 0;
     for (const [theme, count] of Object.entries(themesDetected)) {
         if (count > max && count > 0) {
@@ -158,15 +294,28 @@ function detectThemes(textNorm) {
             highestTheme = theme;
         }
     }
-    return { all: themesDetected, primary: highestTheme };
+
+    // ثاني أعلى موضوع
+    let secondTheme = null;
+    let secondMax = 0;
+    for (const [theme, count] of Object.entries(themesDetected)) {
+        if (theme !== highestTheme && count > secondMax && count > 0) {
+            secondMax = count;
+            secondTheme = theme;
+        }
+    }
+
+    return { all: themesDetected, primary: highestTheme, secondary: secondTheme };
 }
 
+// ═══════════════════════════════════════════════════
+// كشف المدن
+// ═══════════════════════════════════════════════════
 function detectCity(textNorm) {
     const cityFreqs = {};
     for (const city of saudiCities) {
         const count = countArabicMatches(textNorm, city);
         if (count > 0) {
-            // Normalize city name back to canonical form
             const canonical = getCanonicalCity(city);
             cityFreqs[canonical] = (cityFreqs[canonical] || 0) + count;
         }
@@ -178,115 +327,164 @@ function detectCity(textNorm) {
     };
 }
 
-// Map variant spellings to canonical city name
-function getCanonicalCity(city) {
-    const cityMap = {
-        "جده": "جدة", "مكه": "مكة", "المكرمه": "المكرمة",
-        "المدينه": "المدينة", "المنوره": "المنورة",
-        "بريده": "بريدة", "ابها": "أبها",
-        "الاحساء": "الأحساء", "الباحه": "الباحة",
-        "بيشه": "بيشة", "عنيزه": "عنيزة",
-        "المجمعه": "المجمعة", "القنفذه": "القنفذة",
-        "المزاحميه": "المزاحمية", "البكيريه": "البكيرية",
-        "بييه": "بيئة", "جيزان": "جازان"
-    };
-    return cityMap[city] || city;
-}
-
+// ═══════════════════════════════════════════════════
+// تحليل المشاعر المتقدم
+// ═══════════════════════════════════════════════════
 function analyzeSentiment(textNorm) {
     let posScore = 0;
     let negScore = 0;
 
-    for (const word of positiveWords) {
-        posScore += countArabicMatches(textNorm, word);
-    }
-    for (const word of negativeWords) {
-        negScore += countArabicMatches(textNorm, word);
-    }
+    for (const word of positiveWords) posScore += countArabicMatches(textNorm, word);
+    for (const word of negativeWords) negScore += countArabicMatches(textNorm, word);
 
     const total = posScore + negScore;
-    let label = 'neutral';
+    let label = 'محايد';
     let score = 0;
+    let intensity = 'منخفض';
 
     if (total > 0) {
         score = ((posScore - negScore) / total) * 100;
-        if (score > 15) label = 'positive';
-        else if (score < -15) label = 'negative';
-        else label = 'neutral';
+        if (score > 20) { label = 'إيجابي'; intensity = score > 60 ? 'عالي' : 'متوسط'; }
+        else if (score < -20) { label = 'سلبي'; intensity = score < -60 ? 'عالي' : 'متوسط'; }
     }
 
+    return { label, score: Math.round(score), positive: posScore, negative: negScore, intensity };
+}
+
+// ═══════════════════════════════════════════════════
+// كشف الأشخاص المذكورين (NER مبسط)
+// ═══════════════════════════════════════════════════
+function detectEntities(content) {
+    if (!content) return { people: [], organizations: [] };
+    const people = [];
+    const organizations = [];
+
+    for (const prefix of titlePrefixes) {
+        const regex = new RegExp(`${prefix}\\s+([\\u0621-\\u064A]+(?:\\s+[\\u0621-\\u064A]+){0,3})`, 'g');
+        let m;
+        while ((m = regex.exec(content)) !== null) {
+            const name = (prefix + ' ' + m[1]).trim();
+            if (name.length > 5 && name.length < 60) people.push(name);
+        }
+    }
+
+    for (const orgKw of orgKeywords) {
+        const regex = new RegExp(`${orgKw}\\s+([\\u0621-\\u064A]+(?:\\s+[\\u0621-\\u064A]+){0,4})`, 'g');
+        let m;
+        while ((m = regex.exec(content)) !== null) {
+            const org = (orgKw + ' ' + m[1]).trim();
+            if (org.length > 5 && org.length < 80) organizations.push(org);
+        }
+    }
+
+    // إزالة التكرار
     return {
-        label,
-        score: Math.round(score),
-        positive: posScore,
-        negative: negScore
+        people: [...new Set(people)].slice(0, 5),
+        organizations: [...new Set(organizations)].slice(0, 5)
     };
 }
 
+// ═══════════════════════════════════════════════════
+// كشف المؤلف
+// ═══════════════════════════════════════════════════
 function detectAuthor(content) {
     if (!content) return null;
-    // Common patterns: "الرياض - مبارك الدوسري" or "اسم الصحفي"
     const match = content.match(/^[\s]*([^\-–]+)\s*[-–]\s*([^\n\r]+)/);
-    if (match && match[2]) {
-        return match[2].trim().substring(0, 50);
-    }
+    if (match && match[2]) return match[2].trim().substring(0, 50);
     return null;
 }
 
+// ═══════════════════════════════════════════════════
+// تحليل جودة المحتوى المتقدم
+// ═══════════════════════════════════════════════════
+function analyzeQuality(article, wordCount, top20Keywords, hasQuotes, hasNumbers, sentiment) {
+    let score = 30;
+
+    // طول المحتوى
+    if (wordCount > 50) score += 5;
+    if (wordCount > 100) score += 8;
+    if (wordCount > 200) score += 7;
+    if (wordCount > 400) score += 5;
+    if (wordCount > 600) score += 5;
+
+    // تنوع الكلمات
+    if (top20Keywords.length >= 8) score += 5;
+    if (top20Keywords.length >= 15) score += 5;
+
+    // عناصر المحتوى
+    if (hasQuotes) score += 8;
+    if (hasNumbers) score += 5;
+
+    // طول العنوان
+    const titleLen = (article.title || '').length;
+    if (titleLen > 20 && titleLen < 100) score += 5;
+
+    // المشاعر المعبرة
+    if (sentiment.label !== 'محايد') score += 5;
+
+    // أقصى درجة
+    score = Math.min(100, Math.max(0, score));
+
+    // تصنيف الجودة
+    let grade = 'ضعيف';
+    if (score >= 85) grade = 'ممتاز';
+    else if (score >= 70) grade = 'جيد جداً';
+    else if (score >= 55) grade = 'جيد';
+    else if (score >= 40) grade = 'مقبول';
+
+    return { score, grade };
+}
+
+// ═══════════════════════════════════════════════════
+// المحرك الرئيسي
+// ═══════════════════════════════════════════════════
 function analyzeArticles() {
-    console.log('--- Starting NLP & Text Processing Engine v2.0 ---');
+    console.log('═══════════════════════════════════════════');
+    console.log('   محرك التحليل الذكي — الإصدار 3.0');
+    console.log('═══════════════════════════════════════════');
+
     if (!fs.existsSync(RAW_FILE)) {
-        console.error('No raw data found.');
+        console.error('لا توجد بيانات خام.');
         return;
     }
 
     const rawData = JSON.parse(fs.readFileSync(RAW_FILE, 'utf8'));
-    let themeHits = 0;
-    let cityHits = 0;
+    let themeHits = 0, cityHits = 0, sentimentHits = 0;
 
-    const processedData = rawData.map(article => {
+    const processedData = rawData.map((article, idx) => {
         const textNorm = normalizeArabic(article.content);
         const titleNorm = normalizeArabic(article.title);
-
-        const fullTextContext = titleNorm + ' ' + textNorm;
-        const words = tokenizeAndFilter(fullTextContext);
+        const fullText = titleNorm + ' ' + textNorm;
+        const words = tokenizeAndFilter(fullText);
 
         const wordCount = textNorm.split(' ').filter(w => w.length > 0).length;
         const readingTimeMin = Math.ceil(wordCount / 200) || 1;
 
-        // Reading time tier
-        let readingTier = 'quick';
-        if (readingTimeMin >= 5) readingTier = 'long';
-        else if (readingTimeMin >= 2) readingTier = 'medium';
+        let readingTier = 'سريع';
+        if (readingTimeMin >= 5) readingTier = 'طويل';
+        else if (readingTimeMin >= 2) readingTier = 'متوسط';
 
         const sortedFreqs = getWordFrequencies(words);
         const top20Keywords = sortedFreqs.slice(0, 20).map(x => ({ word: x[0], count: x[1] }));
 
-        const themes = detectThemes(fullTextContext);
-        const cityResult = detectCity(fullTextContext);
-        const sentiment = analyzeSentiment(fullTextContext);
+        const themes = detectThemes(fullText);
+        const cityResult = detectCity(fullText);
+        const sentiment = analyzeSentiment(fullText);
+        const entities = detectEntities(article.content);
         const author = detectAuthor(article.content);
 
-        if (themes.primary !== 'Other') themeHits++;
+        const hasNumbers = /\d/.test(article.content || '');
+        const hasQuotes = /["'«»]/.test(article.content || '');
+
+        const quality = analyzeQuality(article, wordCount, top20Keywords, hasQuotes, hasNumbers, sentiment);
+
+        if (themes.primary !== 'عام') themeHits++;
         if (cityResult.most) cityHits++;
+        if (sentiment.label !== 'محايد') sentimentHits++;
 
-        const hasNumbers = /\d/.test(article.content);
-        const hasQuotes = /["']/.test(article.content) || /«|»/.test(article.content);
-        const hasImages = /<img/i.test(article.content || '');
-
-        // Enhanced content richness score
-        let richnessScore = 40; // lower base
-        if (wordCount > 50) richnessScore += 5;
-        if (wordCount > 100) richnessScore += 10;
-        if (wordCount > 300) richnessScore += 10;
-        if (wordCount > 500) richnessScore += 5;
-        if (hasQuotes) richnessScore += 10;
-        if (hasNumbers) richnessScore += 5;
-        if (hasImages) richnessScore += 5;
-        if (top20Keywords.length >= 10) richnessScore += 5;
-        if (top20Keywords.length >= 15) richnessScore += 5;
-        if (sentiment.label !== 'neutral') richnessScore += 5;
-        richnessScore = Math.min(100, richnessScore);
+        if (idx % 1000 === 0 && idx > 0) {
+            console.log(`   ⏳ تم معالجة ${idx.toLocaleString()} مقال...`);
+        }
 
         return {
             id: article.url.split('id=')[1] || Date.now().toString(),
@@ -299,25 +497,31 @@ function analyzeArticles() {
             readingTier,
             top20Keywords,
             primaryTheme: themes.primary,
+            secondaryTheme: themes.secondary,
             themeScores: themes.all,
             mostMentionedCity: cityResult.most,
             cityMentions: cityResult.all,
             sentiment,
+            entities,
             author,
             contentQuality: {
                 hasNumbers,
                 hasQuotes,
-                hasImages,
-                titleLength: article.title.length,
-                richnessScore
+                titleLength: (article.title || '').length,
+                richnessScore: quality.score,
+                grade: quality.grade
             }
         };
     });
 
     fs.writeFileSync(PROCESSED_FILE, JSON.stringify(processedData, null, 2), 'utf8');
-    console.log(`Processed ${processedData.length} articles and saved to ${PROCESSED_FILE}`);
-    console.log(`Theme detection: ${themeHits}/${processedData.length} articles classified (${Math.round(themeHits/processedData.length*100)}%)`);
-    console.log(`City detection: ${cityHits}/${processedData.length} articles with city mentions (${Math.round(cityHits/processedData.length*100)}%)`);
+
+    console.log('');
+    console.log(`   ✅ تم معالجة ${processedData.length.toLocaleString()} مقال`);
+    console.log(`   📊 تصنيف المواضيع: ${themeHits}/${processedData.length} (${Math.round(themeHits / processedData.length * 100)}%)`);
+    console.log(`   🏙️ كشف المدن: ${cityHits}/${processedData.length} (${Math.round(cityHits / processedData.length * 100)}%)`);
+    console.log(`   💬 تحليل المشاعر: ${sentimentHits}/${processedData.length} (${Math.round(sentimentHits / processedData.length * 100)}%)`);
+    console.log('═══════════════════════════════════════════');
 }
 
 analyzeArticles();
